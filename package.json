@@ -12,12 +12,13 @@
     "verbose-dev": "DEBUG=verbose,info,error nf start --procfile Procfile.dev",
     "dev": "DEBUG=info,error nf start --procfile Procfile.dev",
     "staging": "DEBUG=info,error nf start --procfile Procfile.dev --env .env.staging",
-    "test": "npm run lint && DEBUG=info,error nf run jest --env .env.test",
+    "test": "npm run lint && DEBUG=info,error nf run jest --env .env.test && npm run danger",
     "spec": "DEBUG=info,error nf run jest --env .env.test",
     "watch": "DEBUG=info,error nf run npm run envjestwatch --env .env.test",
     "envjestwatch": "jest --watch",
     "lint": "eslint .",
     "fix": "eslint . --fix",
+    "danger": "danger .",
     "integration": "DEBUG=info,error nf run mocha integration --env .env.test",
     "promote": "heroku pipelines:promote -r staging",
     "dump-schema": "babel-node ./scripts/dump-schema.js"
@@ -64,6 +65,7 @@
     "babel-eslint": "^5.0.4",
     "babel-jest": "^16.0.0",
     "babel-plugin-rewire": "1.0.0-beta-2",
+    "danger": "0.0.4",
     "deep-equal": "^1.0.1",
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^3.1.0",
@@ -78,6 +80,10 @@
   "jest": {
     "testRegex": "/test/.*",
     "setupTestFrameworkScriptFile": "<rootDir>/test/helper.js",
-    "testPathIgnorePatterns": ["/node_modules/", "/test/helper.js", "/test/__mocks__"]
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/test/helper.js",
+      "/test/__mocks__"
+    ]
   }
 }
