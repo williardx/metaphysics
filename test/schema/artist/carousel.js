@@ -82,6 +82,7 @@ describe('ArtistCarousel type', () => {
           expect(gravity.args[1][0]).to.equal('artist/foo-bar/artworks');
           expect(gravity.args[1][1]).to.eql({ size: 7, sort: '-iconicity', published: true });
 
+          console.log(data.artist.carousel.images[0])
           expect(data.artist.carousel).to.eql({
             images: [
               {

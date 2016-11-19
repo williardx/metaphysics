@@ -1,10 +1,13 @@
-import schema from '../schema';
+console.log('helper.js');
+jest.mock('../lib/loaders/gravity');
+
+// import schema from '../schema';
 import sinon from 'sinon';
 import expect from 'expect.js';
 import { graphql } from 'graphql';
 
 // Set up our globals
-global.schema = schema;
+// global.schema = schema;
 global.expect = expect;
 global.sinon = sinon;
 
@@ -25,6 +28,7 @@ require('dotenv').config({ path: '.env.test' });
  * @todo This assumes there will always be just 1 error, not sure how to handle this differently.
  */
 global.runQuery = (query, rootValue = { accessToken: null, userID: null }) => {
+  const schema = require('../schema').default;
   return graphql(schema, query, rootValue, {}).then(result => {
     if (result.errors) {
       const error = result.errors[0];

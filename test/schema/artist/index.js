@@ -1,5 +1,8 @@
 import { assign } from 'lodash';
 
+import gravity from '../../../lib/loaders/gravity';
+import schema from '../../../schema';
+
 describe('Artist type', () => {
   const Artist = schema.__get__('Artist');
   let artist = null;
@@ -15,7 +18,7 @@ describe('Artist type', () => {
       partner_shows_count: 42,
     };
 
-    Artist.__Rewire__('gravity', sinon.stub().returns(Promise.resolve(artist)));
+    // Artist.__Rewire__('gravity', sinon.stub().returns(Promise.resolve(artist)));
 
     Artist.__Rewire__('positron', sinon.stub().returns(
       Promise.resolve({
@@ -31,24 +34,24 @@ describe('Artist type', () => {
   });
 
   afterEach(() => {
-    Artist.__ResetDependency__('gravity');
+    // Artist.__ResetDependency__('gravity');
     Artist.__ResetDependency__('total');
     Artist.__ResetDependency__('positron');
   });
 
   it('fetches an artist by ID', () => {
-    return runQuery('{ artist(id: "foo-bar") { id, name } }')
+    return runQuery('{ artist(id: "banksy") { id, name } }')
       .then(data => {
-        expect(Artist.__get__('gravity').args[0][0]).to.equal('artist/foo-bar');
-        expect(data.artist.id).to.equal('foo-bar');
-        expect(data.artist.name).to.equal('Foo Bar');
+        // expect(Artist.__get__('gravity').args[0][0]).to.equal('artist/foo-bar');
+        expect(data.artist.id).to.equal('banksy');
+        expect(data.artist.name).to.equal('Banksy');
       });
   });
 
   it('returns the total number of partner shows for an artist', () => {
     const query = `
       {
-        artist(id: "foo-bar") {
+        artist(id: "banksy") {
           counts {
             partner_shows
           }
@@ -61,7 +64,7 @@ describe('Artist type', () => {
         expect(data).to.eql({
           artist: {
             counts: {
-              partner_shows: 42,
+              partner_shows: 39,
             },
           },
         });
@@ -71,7 +74,7 @@ describe('Artist type', () => {
   it('returns the total number of related artists for an artist', () => {
     const query = `
       {
-        artist(id: "foo-bar") {
+        artist(id: "banksy") {
           counts {
             related_artists
           }
@@ -94,7 +97,7 @@ describe('Artist type', () => {
   it('returns the total number of related articles for an artist', () => {
     const query = `
       {
-        artist(id: "foo-bar") {
+        artist(id: "banksy") {
           counts {
             articles
           }
@@ -117,7 +120,7 @@ describe('Artist type', () => {
   it('returns false if artist has no metadata', () => {
     const query = `
       {
-        artist(id: "foo-bar") {
+        artist(id: "banksy") {
           has_metadata
         }
       }
@@ -132,13 +135,23 @@ describe('Artist type', () => {
         });
       });
   });
+
   describe('when formatting nationality and birthday string', () => {
+    beforeEach(() => {
+      artist = gravity.mockForPath('artist/banksy');
+      artist.nationality = null;
+    });
+
+    afterEach(() => {
+      gravity.resetMockForPath('artist/banksy');
+    });
+
     it('replaces born with b.', () => {
       artist.birthday = 'Born 2000';
 
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             formatted_nationality_and_birthday
           }
         }
@@ -159,7 +172,7 @@ describe('Artist type', () => {
 
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             formatted_nationality_and_birthday
           }
         }
@@ -180,7 +193,7 @@ describe('Artist type', () => {
 
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             formatted_nationality_and_birthday
           }
         }
@@ -202,7 +215,7 @@ describe('Artist type', () => {
 
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             formatted_nationality_and_birthday
           }
         }
@@ -223,7 +236,7 @@ describe('Artist type', () => {
 
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             formatted_nationality_and_birthday
           }
         }
@@ -242,7 +255,7 @@ describe('Artist type', () => {
     it('returns null if neither are provided', () => {
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             formatted_nationality_and_birthday
           }
         }
@@ -264,7 +277,7 @@ describe('Artist type', () => {
       artist.blurb = 'catty blurb';
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             blurb
           }
         }
@@ -285,7 +298,7 @@ describe('Artist type', () => {
     describe('with partner_bio set to true', () => {
       describe('with a featured partner bio', () => {
         beforeEach(() => {
-          Artist.__ResetDependency__('gravity');
+          // Artist.__ResetDependency__('gravity');
           const gravity = sinon.stub();
           Artist.__Rewire__('gravity', gravity);
           gravity
@@ -302,7 +315,7 @@ describe('Artist type', () => {
         afterEach(() => {
           const query = `
             {
-              artist(id: "foo-bar") {
+              artist(id: "banksy") {
                 biography_blurb(partner_bio: true) {
                   text
                   credit
@@ -337,7 +350,7 @@ describe('Artist type', () => {
           artist.blurb = 'artsy blurb';
           const query = `
             {
-              artist(id: "foo-bar") {
+              artist(id: "banksy") {
                 biography_blurb(partner_bio: true) {
                   text
                   credit
@@ -366,7 +379,7 @@ describe('Artist type', () => {
       artist.blurb = 'catty blurb';
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             biography_blurb {
               text
               credit
@@ -407,7 +420,7 @@ describe('Artist type', () => {
 
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             biography_blurb {
               text
               credit
@@ -438,7 +451,7 @@ describe('Artist type', () => {
 
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             formatted_artworks_count
           }
         }
@@ -460,7 +473,7 @@ describe('Artist type', () => {
 
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             formatted_artworks_count
           }
         }
@@ -482,7 +495,7 @@ describe('Artist type', () => {
 
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             formatted_artworks_count
           }
         }
@@ -504,7 +517,7 @@ describe('Artist type', () => {
 
       const query = `
         {
-          artist(id: "foo-bar") {
+          artist(id: "banksy") {
             formatted_artworks_count
           }
         }

@@ -78,7 +78,8 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/test/helper.js",
-      "/test/__mocks__"
+      "/test/__mocks__",
+      "/test/fixtures"
     ]
   }
 }
