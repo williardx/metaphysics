@@ -15,7 +15,7 @@
     "expect": false,
     "runQuery": false,
     "runAuthenticatedQuery": false,
-    "schema": false,
-    "sinon": false
+    "sinon": false,
+    "itMatchesRecording": false,
   }
 }

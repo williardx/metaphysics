@@ -5,6 +5,7 @@ import {
   defaults,
   first,
   has,
+  isEmpty,
   take,
 } from 'lodash';
 import { exclude } from '../../lib/helpers';
@@ -151,14 +152,13 @@ const ArtistType = new GraphQLObjectType({
         type: GraphQLString,
         description: 'A string of the form "Nationality, Birthday"',
         resolve: ({ birthday, nationality }) => {
-          let formatted_bday = (!isNaN(birthday) && birthday) ? 'b. ' + birthday : birthday;
-          formatted_bday = formatted_bday && formatted_bday.replace(/born/i, 'b.');
-
-          if (nationality && formatted_bday) {
-            return nationality + ', ' + formatted_bday;
+          let bday = isEmpty(birthday) ? null : birthday;
+          let nat = isEmpty(nationality) ? null : nationality;
+          if (bday) {
+            bday = isNaN(bday) ? bday.replace(/born/i, 'b.') : `b. ${bday}`;
+            if (nat) return `${nat}, ${bday}`;
           }
-
-          return nationality || formatted_bday;
+          return nat || bday;
         },
       },
       biography: {

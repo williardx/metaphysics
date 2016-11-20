@@ -1,15 +1,17 @@
-console.log('helper.js');
 jest.mock('../lib/loaders/gravity');
 
-// import schema from '../schema';
+// We want to silence the console output from node-uuid, so we use a mocked module
+// at __mocks__/node-uuid.js which has it's console muted
+jest.mock('node-uuid');
+
 import sinon from 'sinon';
 import expect from 'expect.js';
 import { graphql } from 'graphql';
+import itMatchesRecording from './helper/recordings';
 
-// Set up our globals
-// global.schema = schema;
 global.expect = expect;
 global.sinon = sinon;
+global.itMatchesRecording = itMatchesRecording;
 
 // Do not require the use of node-foreman during testing
 require('dotenv').config({ path: '.env.test' });
@@ -109,7 +111,3 @@ expect.Assertion.prototype.resolved = function resolved() {
   this.flags.not = !this.flags.not;
   return this.rejected();
 };
-
-// We want to silence the console output from node-uuid, so we use a mocked module
-// at __mocks__/node-uuid.js which has it's console muted
-jest.mock('node-uuid');
