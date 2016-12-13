@@ -1,3 +1,4 @@
+// @flow
 import gravity from '../../lib/loaders/gravity';
 import delta from '../../lib/loaders/delta';
 import {
@@ -29,11 +30,11 @@ export const featuredAuction = () => {
   });
 };
 
-export const followedGenes = (accessToken, size) => {
+export const followedGenes = (accessToken: string, size: number) => {
   return gravity.with(accessToken)('me/follow/genes', { size });
 };
 
-export const featuredGene = (accessToken) => {
+export const featuredGene = (accessToken: string) => {
   return followedGenes(accessToken, 1).then((follows) => {
     if (follows.length) {
       return first(follows).gene;
@@ -41,7 +42,7 @@ export const featuredGene = (accessToken) => {
   });
 };
 
-export const geneArtworks = (id, size) => {
+export const geneArtworks = (id: string, size: number) => {
   return gravity('filter/artworks', {
     gene_id: id,
     for_sale: true,
@@ -51,7 +52,7 @@ export const geneArtworks = (id, size) => {
   });
 };
 
-export const relatedArtist = (accessToken, userID) => {
+export const relatedArtist = (accessToken: string, userID: string) => {
   return gravity.with(accessToken)(`user/${userID}/suggested/similar/artists`, {
     exclude_artists_without_forsale_artworks: true,
     exclude_followed_artists: true,
