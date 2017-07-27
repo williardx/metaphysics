@@ -46,6 +46,7 @@ describe("Me", () => {
                       name
                       email
                     }
+                    body
                   }
                 }
               }
@@ -72,7 +73,8 @@ describe("Me", () => {
             metadata: {
               lewitt_invoice_id: "420i",
             },
-            from: "\"Percy Z\" <percy@cat.com>",
+            from: '"Percy Z" <percy@cat.com>',
+            body: "I'm a cat",
           },
           {
             id: "241",
@@ -81,7 +83,8 @@ describe("Me", () => {
             from_id: null,
             attachments: [],
             metadata: {},
-            from: "\"Bitty Z\" <Bitty@cat.com>",
+            from: '"Bitty Z" <Bitty@cat.com>',
+            body: "",
           },
           {
             id: "242",
@@ -90,7 +93,8 @@ describe("Me", () => {
             from_id: "user-42",
             attachments: [],
             metadata: {},
-            from: "\"Matt Z\" <matt@cat.com>",
+            from: '"Matt Z" <matt@cat.com>',
+            body: null,
           },
           {
             id: "243",
@@ -122,6 +126,7 @@ describe("Me", () => {
                     name: "Percy Z",
                     email: "fancy_german_person@posteo.de",
                   },
+                  body: "I'm a cat",
                 },
               },
               {
@@ -133,6 +138,7 @@ describe("Me", () => {
                     name: "Bitty Z",
                     email: "postman@posteo.de",
                   },
+                  body: "",
                 },
               },
               {
@@ -144,6 +150,7 @@ describe("Me", () => {
                     name: "Matt Z",
                     email: "fancy_german_person+wunderbar@posteo.de",
                   },
+                  body: null,
                 },
               },
               {
@@ -155,6 +162,7 @@ describe("Me", () => {
                     name: null,
                     email: "postman+wunderlich@posteo.de",
                   },
+                  body: null,
                 },
               },
             ],
