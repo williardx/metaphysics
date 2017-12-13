@@ -213,18 +213,26 @@ function filterArtworks(primaryKey) {
   return {
     type: FilterArtworksType,
     description: "Artworks Elastic Search results",
-    args: filterArtworksArgs,
+    args: pageable(filterArtworksArgs),
     resolve: (root, options, request, { rootValue: { accessToken } }) => {
       const gravityOptions = Object.assign({}, options)
       if (primaryKey) {
         gravityOptions[primaryKey] = root.id
       }
-
       // Support queries that show all mediums using the medium param.
       // If you specify "*" it results in metaphysics removing the query option
       // making the graphQL queries between all and a subset of mediums the same shape.
       if (options.medium === "*") {
         delete gravityOptions.medium
+      }
+
+      // If we are calling this from a Relay pagination container, pull out page/size
+      const { page, size } = parseRelayOptions(options)
+      if (page) {
+        gravityOptions.page = page
+      }
+      if (size) {
+        gravityOptions.size = size
       }
 
       return gravity
