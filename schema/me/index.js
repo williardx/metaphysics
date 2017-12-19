@@ -86,8 +86,8 @@ const Me = new GraphQLObjectType({
 
 export default {
   type: Me,
-  resolve: (root, options, request, { rootValue: { accessToken, userID }, fieldNodes }) => {
-    if (!accessToken) return null
+  resolve: (root, options, request, { rootValue: { userID, meLoader }, fieldNodes }) => {
+    if (!meLoader) return null
     const blacklistedFields = [
       "id",
       "__id",
@@ -110,9 +110,7 @@ export default {
       "followsAndSaves",
     ]
     if (queriedForFieldsOtherThanBlacklisted(fieldNodes, blacklistedFields)) {
-      return gravity
-        .with(accessToken)("me")
-        .catch(() => null)
+      return meLoader()
     }
 
     // The email and is_collector are here so that the type system's `isTypeOf`

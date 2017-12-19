@@ -125,7 +125,8 @@ describe("BidderStatus type", () => {
       }
     `
 
-    return runAuthenticatedQuery(query).then(({ me }) => {
+    const meLoader = Promise.resolve()
+    return runAuthenticatedQuery(query, { meLoader }).then(({ me }) => {
       expect(me).toEqual({
         bidder_status: {
           is_highest_bidder: false,

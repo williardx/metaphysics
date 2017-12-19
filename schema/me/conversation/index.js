@@ -340,6 +340,6 @@ export default {
   },
   resolve: (root, { id }, request, { rootValue: { conversationLoader } }) => {
     if (!conversationLoader) return null
-    return conversationLoader(id)
+    return conversationLoader(id).then(c => ({ ...c, type_of:"asdasd"}))
   },
 }
