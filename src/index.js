@@ -5,7 +5,6 @@ import depthLimit from "graphql-depth-limit"
 import express from "express"
 import graphqlErrorHandler from "./lib/graphqlErrorHandler"
 import graphqlHTTP from "express-graphql"
-import localSchema from "./schema"
 import moment from "moment"
 import morgan from "artsy-morgan"
 import raven from "raven"
@@ -21,14 +20,12 @@ import { middleware as requestTracer, makeSchemaTraceable } from "./lib/tracer"
 
 const {
   ENABLE_QUERY_TRACING,
-  ENABLE_SCHEMA_STITCHING,
   NODE_ENV,
   QUERY_DEPTH_LIMIT,
   SENTRY_PRIVATE_DSN,
 } = config
 const isProduction = NODE_ENV === "production"
 const queryLimit = (QUERY_DEPTH_LIMIT && parseInt(QUERY_DEPTH_LIMIT, 10)) || 10 // Default to ten.
-const enableSchemaStitching = ENABLE_SCHEMA_STITCHING === "true"
 const enableQueryTracing = ENABLE_QUERY_TRACING === "true"
 const enableSentry = !!SENTRY_PRIVATE_DSN
 
@@ -37,15 +34,7 @@ const app = express()
 async function startApp() {
   config.GRAVITY_XAPP_TOKEN = xapp.token
 
-  let schema = localSchema
-
-  if (enableSchemaStitching) {
-    try {
-      schema = await mergeSchemas()
-    } catch (error) {
-      console.log("Error merging schemas:", error) // eslint-disable-line
-    }
-  }
+  const schema = await mergeSchemas()
 
   if (enableQueryTracing) {
     console.warn("[FEATURE] Enabling query tracing") // eslint-disable-line

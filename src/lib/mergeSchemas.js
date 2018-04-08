@@ -1,60 +1,27 @@
-import urljoin from "url-join"
 import {
   mergeSchemas as _mergeSchemas,
   makeRemoteExecutableSchema,
 } from "graphql-tools"
 import fs from "fs"
 import path from "path"
-import { ApolloLink } from "apollo-link"
-import { createHttpLink } from "apollo-link-http"
-import { setContext } from "apollo-link-context"
-import fetch from "node-fetch"
 
 import localSchema from "../schema"
-import { headers as requestIDHeaders } from "./requestIDs"
 
-import config from "config"
+import { createConvectionLink } from "../schema/stitching/links/convection"
 
-const { CONVECTION_API_BASE } = config
-
-export function createConvectionLink() {
-  const httpLink = createHttpLink({
-    fetch,
-    uri: urljoin(CONVECTION_API_BASE, "graphql"),
-  })
-
-  const middlewareLink = new ApolloLink((operation, forward) =>
-    forward(operation)
-  )
-
-  const authMiddleware = setContext((_request, context) => {
-    const locals = context.graphqlContext && context.graphqlContext.res.locals
-    const tokenLoader = locals && locals.dataLoaders.convectionTokenLoader
-    const headers = { ...(locals && requestIDHeaders(locals.requestIDs)) }
-    // If a token loader exists for Convection (i.e. this is an authenticated request), use that token to make
-    // authenticated requests to Convection.
-    if (tokenLoader) {
-      return tokenLoader().then(({ token }) => ({
-        headers: Object.assign(headers, { Authorization: `Bearer ${token}` }),
-      }))
-    }
-    // Otherwise use no authentication, which is also meant for fetching the service’s (public) schema.
-    return { headers }
-  })
-
-  return middlewareLink.concat(authMiddleware).concat(httpLink)
+const defaultLinks = {
+  createConvectionLink,
 }
 
-export async function mergeSchemas() {
+export async function mergeSchemas(links = defaultLinks) {
   // The below all relate to Convection stitching.
   // TODO: Refactor when adding another service.
   const convectionTypeDefs = fs.readFileSync(
     path.join("src/data/convection.graphql"),
     "utf8"
   )
-
-  const convectionLink = createConvectionLink()
-
+  debugger
+  const convectionLink = links.createConvectionLink()
   const convectionSchema = await makeRemoteExecutableSchema({
     schema: convectionTypeDefs,
     link: convectionLink,
@@ -69,10 +36,10 @@ export async function mergeSchemas() {
   const mergedSchema = _mergeSchemas({
     schemas: [localSchema, convectionSchema, linkTypeDefs],
     // Prefer others over the local MP schema.
-    onTypeConflict: (_leftType, rightType) => {
-      console.warn(`[!] Type collision ${rightType}`) // eslint-disable-line no-console
-      return rightType
-    },
+    // onTypeConflict: (_leftType, rightType) => {
+    //   console.warn(`[!] Type collision ${rightType}`) // eslint-disable-line no-console
+    //   return rightType
+    // },
     resolvers: {
       Submission: {
         artist: {

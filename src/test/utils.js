@@ -49,15 +49,17 @@ let mergedSchema
  * Same as `runQuery`, but runs against stitched schema
  *
  * @param {String} query      The GraphQL query to run.
+ * @param {Object} links A set of Apollo HTTP links for making external requests.
  * @param {Object} rootValue  The request params, which currently are `accessToken` and `userID`.
  * @see runQuery
  */
 export const runQueryMerged = async (
   query,
+  links,
   rootValue = { accessToken: null, userID: null }
 ) => {
   if (!mergedSchema) {
-    mergedSchema = await mergeSchemas()
+    mergedSchema = await mergeSchemas(links)
   }
   return graphql(mergedSchema, query, rootValue, {}).then(result => {
     if (result.errors) {
@@ -67,4 +69,24 @@ export const runQueryMerged = async (
       return result.data
     }
   })
+}
+
+/**
+ * Same as `runAuthenticatedQuery`, but runs against stitched schema
+ *
+ * @param {String} query      The GraphQL query to run.
+ * @param {Object} links A set of Apollo HTTP links for making external requests.
+ * @param {Object} rootValue  The request params, which currently are `accessToken` and `userID`.
+ * @see runQuery
+ */
+export const runAuthenticatedMergedQuery = async (
+  query,
+  links,
+  rootValue = {}
+) => {
+  return runQueryMerged(
+    query,
+    links,
+    Object.assign({ accessToken: "secret", userID: "user-42" }, rootValue)
+  )
 }

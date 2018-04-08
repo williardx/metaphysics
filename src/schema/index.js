@@ -47,9 +47,6 @@ import Me from "./me"
 import UpdateConversationMutation from "./me/conversation/update_conversation_mutation"
 import SendConversationMessageMutation from "./me/conversation/send_message_mutation"
 import UpdateCollectorProfile from "./me/update_collector_profile"
-import CreateSubmissionMutation from "./me/consignments/create_submission_mutation"
-import UpdateSubmissionMutation from "./me/consignments/update_submission_mutation"
-import AddAssetToConsignmentSubmission from "./me/consignments/add_asset_to_submission_mutation"
 import SaveArtworkMutation from "./me/save_artwork_mutation"
 import { endSaleMutation } from "./sale/end_sale_mutation"
 import CreateAssetRequestLoader from "./asset_uploads/create_asset_request_mutation"
@@ -59,11 +56,6 @@ import UpdateMyUserProfileMutation from "./me/update_me_mutation"
 import CausalityJWT from "./causality_jwt"
 import ObjectIdentification from "./object_identification"
 import { GraphQLSchema, GraphQLObjectType } from "graphql"
-
-import config from "config"
-
-const { ENABLE_SCHEMA_STITCHING } = config
-const enableSchemaStitching = ENABLE_SCHEMA_STITCHING === "true"
 
 const rootFields = {
   article: Article,
@@ -123,14 +115,6 @@ const Viewer = {
   resolve: x => x,
 }
 
-const convectionMutations = enableSchemaStitching
-  ? {}
-  : {
-    createConsignmentSubmission: CreateSubmissionMutation,
-    updateConsignmentSubmission: UpdateSubmissionMutation,
-    addAssetToConsignmentSubmission: AddAssetToConsignmentSubmission,
-  }
-
 const schema = new GraphQLSchema({
   allowedLegacyNames: ["__id"],
   mutation: new GraphQLObjectType({
@@ -146,7 +130,6 @@ const schema = new GraphQLSchema({
       endSale: endSaleMutation,
       requestCredentialsForAssetUpload: CreateAssetRequestLoader,
       createGeminiEntryForAsset: CreateGeminiEntryForAsset,
-      ...convectionMutations,
     },
   }),
   query: new GraphQLObjectType({
