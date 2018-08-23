@@ -167,12 +167,14 @@ type MutationError {
 
 # An Order
 type Order {
+  approvedAt: DateTime
   buyerTotalCents: Int
   code: String!
   commissionFeeCents: Int
   createdAt: DateTime!
   creditCardId: String
   currencyCode: String!
+  fulfilledAt: DateTime
   fulfillmentType: OrderFulfillmentTypeEnum
   id: ID!
   itemsTotalCents: Int!
@@ -190,6 +192,7 @@ type Order {
     last: Int
   ): LineItemConnection
   partnerId: String!
+  rejectedAt: DateTime
   sellerTotalCents: Int
   shippingAddressLine1: String
   shippingAddressLine2: String
@@ -202,6 +205,7 @@ type Order {
   state: OrderStateEnum!
   stateExpiresAt: DateTime
   stateUpdatedAt: DateTime
+  submittedAt: DateTime
   taxTotalCents: Int
   transactionFeeCents: Int
   updatedAt: DateTime!
